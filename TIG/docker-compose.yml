@@ -61,3 +61,7 @@ services:
   bat-sim:
     image: bat-sim
     container_name: bat-sim
+
+  bat-control:
+    image: bat-control
+    container_name: bat-control

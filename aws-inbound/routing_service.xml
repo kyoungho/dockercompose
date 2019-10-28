@@ -11,8 +11,7 @@
     <qos_profile name="TCP_WAN_Demo_profile">
       <participant_qos>
         <discovery>
-          <initial_peers>
-                </initial_peers>
+	  <initial_peers><element>tcpv4_wan://54.147.156.98:7400</element></initial_peers>
         </discovery>
         <transport_builtin>
           <!--<mask>UDPv4</mask>-->

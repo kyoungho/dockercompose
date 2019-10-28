@@ -1,0 +1,47 @@
+version: '3'
+services:
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+      - "8090:8090"
+    env_file:
+      - 'env.influxdb'
+    volumes:
+      # Data persistency
+      # sudo mkdir -p /tmp/docker/influxdb/data
+      - /tmp/docker/influxdb/data:/var/lib/influxdb
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    env_file:
+      - 'env.grafana'
+    links:
+      - influxdb
+    volumes:
+      # Data persistency
+      # sudo mkdir -p /tmp/docker/grafana/data; sudo chown 472:472 /tmp/docker/grafana/data
+      - /tmp/docker/grafana/data:/var/lib/grafana
+
+  telegraf:
+    image: kyoungho/telegraf:latest
+    container_name: telegraf
+    links:
+      - influxdb
+    volumes:
+      - ./ddslp_to_influx.conf:/app/telegraf.conf:ro
+
+  routing-service:
+    image: rti-routingservice:latest
+    container_name: rti-routingservice
+    ports:
+      - "7400:7400"
+    env_file:
+      - 'env.rs'
+    volumes:
+      - ./routing_service.xml:/app/config.xml:ro

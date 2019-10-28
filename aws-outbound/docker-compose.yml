@@ -1,0 +1,19 @@
+version: '3'
+services:
+  telegraf:
+    image: kyoungho/telegraf:latest
+    container_name: telegraf
+    links:
+      - influxdb
+    volumes:
+      - ./system_to_ddslp.conf:/app/telegraf.conf:ro
+
+  routing-service:
+    image: rti-routingservice:latest
+    container_name: rti-routingservice
+    ports:
+      - "7400:7400"
+    env_file:
+      - 'env.rs'
+    volumes:
+      - ./routing_service.xml:/app/config.xml:ro

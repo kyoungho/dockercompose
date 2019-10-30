@@ -9,7 +9,7 @@ This code contains trade secrets of Real-Time Innovations, Inc.
 <dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://community.rti.com/schema/5.1.0/rti_dds_profiles.xsd" version="5.1.0">
   <!-- Qos Library -->
   <qos_library name="QosLibrary">
-    <qos_profile name="DefaultProfile" base_name="BuiltinQosLibExp::Generic.StrictReliable" is_default_qos="true">
+    <qos_profile name="DefaultProfile" base_name="BuiltinQosLibExp::Generic.KeepLastReliable" is_default_qos="true">
       <participant_qos>
         <transport_builtin>
           <mask>UDPV4 | SHMEM</mask>
@@ -42,6 +42,7 @@ This code contains trade secrets of Real-Time Innovations, Inc.
       <register_type name="ShapeType" type_ref="ShapeType"/>
       <topic name="Square" register_type_ref="ShapeType"/>
       <topic name="Triangle" register_type_ref="ShapeType"/>
+      <topic name="Circle" register_type_ref="ShapeType"/>
     </domain>
   </domain_library>
   <!-- Participant library -->
@@ -53,7 +54,26 @@ This code contains trade secrets of Real-Time Innovations, Inc.
     </domain_participant>
     <domain_participant name="One" domain_ref="MyDomainLibrary::MyDomain">
       <subscriber name="MySubscriber">
-        <data_reader name="MyTriangleReader" topic_ref="Triangle"/>
+        <data_reader name="MyTriangleReader" topic_ref="Triangle">
+		<datareader_qos base_name="QosLibrary::DefaultProfile">
+                <history>
+                    <kind>KEEP_LAST_HISTORY_QOS</kind>
+                    <depth>1000</depth>
+                </history>
+                <durability>
+                    <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+                </durability>
+		</datareader_qos>
+	</data_reader>
+      </subscriber>
+    </domain_participant>
+    <domain_participant name="Two" domain_ref="MyDomainLibrary::MyDomain">
+      <subscriber name="MySubscriber">
+        <data_reader name="MyCircleReader" topic_ref="Circle">
+		<filter name="Circle" kind="builtin.sql">
+			<expression> x > 100 </expression>
+		</filter>
+	</data_reader>
       </subscriber>
     </domain_participant>
   </domain_participant_library>

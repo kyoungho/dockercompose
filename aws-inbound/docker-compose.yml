@@ -9,8 +9,8 @@ services:
       - 'env.influxdb'
     volumes:
       # Data persistency
-      # sudo mkdir -p /tmp/docker/influxdb/data
-      - /tmp/docker/influxdb/data:/var/lib/influxdb
+      # sudo mkdir -p $HOME/docker/influxdb/data
+      - $HOME/docker/influxdb/data:/var/lib/influxdb
 
   grafana:
     image: grafana/grafana:latest
@@ -21,10 +21,12 @@ services:
       - 'env.grafana'
     links:
       - influxdb
+    depends_on:
+      - influxdb
     volumes:
       # Data persistency
-      # sudo mkdir -p /tmp/docker/grafana/data; sudo chown 472:472 /tmp/docker/grafana/data
-      - /tmp/docker/grafana/data:/var/lib/grafana
+      # sudo mkdir -p $HOME/docker/grafana/data; sudo chown 472:472 $HOME/docker/grafana/data
+      - $HOME/docker/grafana/data:/var/lib/grafana
 
   telegraf:
     image: kyoungho/telegraf:latest

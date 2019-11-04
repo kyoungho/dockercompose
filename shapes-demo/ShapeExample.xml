@@ -6,7 +6,7 @@ without express written permission.  Any such copies, or revisions thereof,
 must display this notice unaltered.
 This code contains trade secrets of Real-Time Innovations, Inc.
  -->
-<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://community.rti.com/schema/5.1.0/rti_dds_profiles.xsd" version="5.1.0">
+<dds>
   <!-- Qos Library -->
   <qos_library name="QosLibrary">
     <qos_profile name="DefaultProfile" base_name="BuiltinQosLibExp::Generic.KeepLastReliable" is_default_qos="true">
@@ -55,25 +55,27 @@ This code contains trade secrets of Real-Time Innovations, Inc.
     <domain_participant name="One" domain_ref="MyDomainLibrary::MyDomain">
       <subscriber name="MySubscriber">
         <data_reader name="MyTriangleReader" topic_ref="Triangle">
-		<datareader_qos base_name="QosLibrary::DefaultProfile">
-                <history>
-                    <kind>KEEP_LAST_HISTORY_QOS</kind>
-                    <depth>1000</depth>
-                </history>
-                <durability>
-                    <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
-                </durability>
-		</datareader_qos>
-	</data_reader>
+          <datareader_qos>
+            <reliability>
+              <kind>RELIABLE_RELIABILITY_QOS</kind>
+            </reliability>
+            <durability>
+              <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+            </durability>
+            <history>
+              <kind>KEEP_ALL_HISTORY_QOS</kind>
+            </history>
+          </datareader_qos>
+        </data_reader>
       </subscriber>
     </domain_participant>
     <domain_participant name="Two" domain_ref="MyDomainLibrary::MyDomain">
       <subscriber name="MySubscriber">
         <data_reader name="MyCircleReader" topic_ref="Circle">
-		<filter name="Circle" kind="builtin.sql">
-			<expression> x > 100 </expression>
-		</filter>
-	</data_reader>
+          <filter name="Circle" kind="builtin.sql">
+            <expression> x > 100 </expression>
+          </filter>
+        </data_reader>
       </subscriber>
     </domain_participant>
   </domain_participant_library>
